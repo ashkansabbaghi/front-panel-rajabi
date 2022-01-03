@@ -9,6 +9,9 @@
                 <CForm @submit.passive="registerSubmit()">
                   <h1>Register</h1>
                   <p class="text-medium-emphasis">Create your account</p>
+                  <p v-if="errors.status" class="text-danger">
+                    <small>{{ errors.msg }}</small>
+                  </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
@@ -23,6 +26,7 @@
                   <CInputGroup class="mb-3">
                     <CInputGroupText>@</CInputGroupText>
                     <CFormInput
+                      type="email"
                       required
                       placeholder="Email"
                       autocomplete="email"
@@ -56,6 +60,7 @@
                   <CInputGroup class="mb-3">
                     <CInputGroupText>&</CInputGroupText>
                     <CFormInput
+                      type="number"
                       placeholder="Phone"
                       autocomplete="phone"
                       v-model="user.phone_number"
@@ -67,7 +72,7 @@
                       <CIcon icon="cil-location-pin" />
                     </CInputGroupText>
                     <CFormSelect aria-label="Default select example" v-model="user.city" required>
-                      <option value="">city</option>
+                      <option value>city</option>
                       <option v-for="city in cities" :key="city.id" :value="city.id">{{ city.name }}</option>
                     </CFormSelect>
                   </CInputGroup>
@@ -75,8 +80,8 @@
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
-                    <CFormSelect aria-label="Default select example" v-model="role" required>
-                      <option value="">role</option>
+                    <CFormSelect aria-label="Default select example" v-model="user.role" required>
+                      <option value>role</option>
                       <option v-for="(item,index) in roles" :key="index" :value="item">{{ item }}</option>
                     </CFormSelect>
                   </CInputGroup>
@@ -151,6 +156,7 @@
 <script>
 import { mapState, mapActions } from "vuex"
 import axios from "axios"
+import store from "@/store"
 let URL_register = "auth/register/";
 
 export default {
@@ -163,30 +169,36 @@ export default {
       email: '',
       phone_number: '',
       city: '',
+      role: '',
     },
     cities: '',
     roles: '',
-    role: '',
+
+    errors: {
+      status: false,
+      msg: "Change the fields and try again",
+    },
   }),
 
   mounted() {
 
-    this.$store.dispatch('login/getCity')
-    this.cities = this.$store.state.login.cities
-    this.roles = this.$store.state.login.roles
+    store.dispatch('login/getCity')
+    this.cities = store.state.login.cities
+    this.roles = store.state.login.roles
 
   },
   methods: {
 
     async registerSubmit() {
+      this.errors.status = false
       // this.loading = true;
       // this.errors = [];
       axios.defaults.headers.common["Authorization"] = "";
       // localStorage.removeItem("token");
-      this.$store.commit('login/removeToken')
+      store.commit('login/removeToken')
 
       await axios
-        .post(`${URL_register}${this.role}/`, {
+        .post(`${URL_register}${this.user.role}/`, {
           username: this.user.username,
           password: this.user.password,
           email: this.user.email,
@@ -199,34 +211,26 @@ export default {
             const token = response.data.data.token;
             const refToken = response.data.data.refreshToken;
             // const user = response.data.data.wallet.name;
-            console.log(token, refToken, user)
-            this.$store.commit("login/setToken", token);
+            console.log(token, refToken)
             //save token
-            // localStorage.setItem("token", token);
-            // this.$store.commit("login/setUser", user);
+            store.commit("login/setToken", token);
             // loading
             // this.loading = false;
+
             // change direction
             window.setTimeout(function () {
               location.replace("/");
-            }, 300);
+            }, 100);
           }
         })
         .catch((error) => {
           console.log(error.response);
           // loading
           // this.loading = false;
-          // if (error.response) {
-          //   localStorage.removeItem("token");
-          //   for (const e in error.response.data.non_field_errors) {
-          //     const i = `${error.response.data.non_field_errors[e]}`;
-          //     this.errors.push(i);
-          //   }
-          // } else if (error.message) {
-          //   console.log(error.message);
-          // } else {
-          //   console.log(error);
-          // }
+          if (error.response.status == 400) {
+            this.errors.status = true
+            // this.errors.msg = error.response.data.data
+          }
         });
     },
   },

@@ -56,12 +56,27 @@ export default {
     return {
       avatar: avatar,
       itemsCount: 42,
+      // info: {
+      //   token: store.state['login'].token,
+      //   userInfo: store.state['login'].user.info.userable_type,
+      // },
     }
   },
+  data: () => ({
+    // info: {
+    //   token: store.state['login'].token,
+    //   userInfo: store.state['login'].user.info.userable_type,
+    // },
+  }),
 
-  methods:{
-    async logoutSubmit(){
-      store.dispatch("login/logout")
+  methods: {
+    async logoutSubmit() {
+      // console.log(this.userInfo.info.userable_type)
+      const info = {
+        token: store.state['login'].token,
+        userInfo: store.state['login'].user.info.userable_type,
+      }
+      store.dispatch("login/logOutUser", info)
     }
   }
 }

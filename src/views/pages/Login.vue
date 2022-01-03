@@ -10,7 +10,7 @@
                   <h1>Login</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
                   <p v-if="!errors.status" class="text-danger">
-                    <small>{{errors.msg}}</small>
+                    <small>{{ errors.msg }}</small>
                   </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
@@ -35,29 +35,12 @@
                       v-model="user.password"
                     />
                   </CInputGroup>
-                  <!-- <CInputGroup class="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
-                    <CFormInput required placeholder="Email" autocomplete="email" v-model="user.email" />
-                  </CInputGroup>
-                  <CInputGroup class="mb-3">
-                    <CInputGroupText>&</CInputGroupText>
-                    <CFormInput required placeholder="Phone" autocomplete="phone" v-model="user.phone" />
-                  </CInputGroup>
-                  <CInputGroup class="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon="cil-location-pin" />
-                    </CInputGroupText>
-                    <CFormSelect aria-label="Default select example" v-model="user.city" required>
-                      <option value="">city</option>
-                      <option v-for="city in cities" :key="city.id" :value="city.id">{{ city.name }}</option>
-                    </CFormSelect>
-                  </CInputGroup>-->
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
-                    <CFormSelect aria-label="Default select example" v-model="role" required>
-                      <option value="">role</option>
+                    <CFormSelect aria-label="Default select example" v-model="user.role" required>
+                      <option value>role</option>
                       <option v-for="(item,index) in roles" :key="index" :value="item">{{ item }}</option>
                     </CFormSelect>
                   </CInputGroup>
@@ -93,6 +76,7 @@
 <script>
 import { mapState } from "vuex"
 import axios from "axios"
+import store from "@/store"
 let URL_login = "auth/login/username/";
 
 export default {
@@ -101,21 +85,16 @@ export default {
     user: {
       username: '',
       password: '',
-      email: '',
-      phone: '',
-      city: '',
+      role: '',
     },
     cities: '',
     roles: '',
-    role: '',
+
     errors: {
       status: '',
       msg: ''
     },
   }),
-  computed: {
-    // ...mapState('login', ['itemLogin'])
-  },
   mounted() {
 
     this.$store.dispatch('login/getCity')
@@ -124,12 +103,15 @@ export default {
 
   },
   methods: {
-    loginSubmit() {
+    // loginSubmit() {
+    //   store.dispatch('login/loginSubmit', this.user)
+    // }
+    async loginSubmit() {
       axios.defaults.headers.common['Authorization'] = ''
       // localStorage.removeItem('token')
       this.$store.commit('login/removeToken')
 
-      axios.post(`${URL_login}${this.role}/`, {
+      await axios.post(`${URL_login}${this.user.role}/`, {
         username: this.user.username,
         password: this.user.password,
 
@@ -139,24 +121,26 @@ export default {
           const refToken = response.data.data.refreshToken;
           // const user = response.data.data.wallet.name;
 
-          this.$store.commit("login/setToken", token);
           //save token
-          // localStorage.setItem("token", token);
-          // this.$store.commit("login/setUser", user);
+          store.commit("login/setToken", token)
+          // get user vuex
+          // let user = store.dispatch('login/getUser', token)
+          // console.log(user)
+
           // loading
           // this.loading = false;
           // change direction
           window.setTimeout(function () {
             location.replace("/");
-          }, 0);
+          }, 100);
         }
       }).catch((error) => {
         // loading
         // this.loading = false;
-
-        if (!error.response.data.status) {
-          this.errors.status = error.response.data.status
-          this.errors.msg = error.response.data.message
+        console.log(error.response)
+        if (!error.response.data.data.status) {
+          this.errors.status = error.response.data.data.status
+          this.errors.msg = error.response.data.data.message
         }
       })
     }

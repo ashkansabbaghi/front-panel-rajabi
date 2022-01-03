@@ -2,11 +2,12 @@
     <CRow>
         <CCol>
             <CCard class="text-center">
-                <CCardHeader v-text="userInfo.username"></CCardHeader>
+                <CCardHeader v-text="user.username"></CCardHeader>
+
                 <CCardBody>
-                    <CCardTitle>Special title treatment</CCardTitle>
-                    <CCardText>With supporting text below as a natural lead-in to additional content.</CCardText>
-                    <CButton href="#">Go somewhere</CButton>
+                    <CCardTitle  v-text="user.phone_number"></CCardTitle>
+                    <!-- <CCardText v-text="user.info.userable_type" ></CCardText> -->
+                    <CButton href="#" color="success" variant="ghost">edit profile</CButton>
                 </CCardBody>
                 <CCardFooter class="text-muted">2 days ago</CCardFooter>
             </CCard>
@@ -15,21 +16,29 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
 import store from "@/store"
-import axios from "axios"
 
 export default {
     name: 'Info',
     components: {
 
     },
+    props: ["user"],
     data: () => ({
         token: store.state['login'].token,
-        userInfo :store.state['login'].user,
+        userType: "",
+
     }),
+
+    // computed: {
+    //     count:()=> (this.$store.state['login'].user)
+    // },
     mounted() {
-        store.dispatch('login/getUser', this.token)
-    },
+        console.log(this.user);
+        // this.userType = this.user.info.userable_type
+        // store.dispatch('login/getUser', this.token)
+        // this.token = store.state['login'].token
+        // this.user = store.state['login'].user
+    }
 }
 </script>
