@@ -1,7 +1,8 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 import createPersistedState from "vuex-persistedstate";
-import login from "./modules/login.module"
+// import login from "./modules/login.module"
+import auth from "./auth/index"
 
 export default createStore({
   plugins: [createPersistedState()],
@@ -22,6 +23,7 @@ export default createStore({
   },
   actions: {},
   modules: {
-    login,
+    // login,
+    auth
   },
 })

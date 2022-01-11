@@ -9,8 +9,8 @@
                 <CForm @submit.passive="registerSubmit()">
                   <h1>Register</h1>
                   <p class="text-medium-emphasis">Create your account</p>
-                  <p v-if="errors.status" class="text-danger">
-                    <small>{{ errors.msg }}</small>
+                  <p v-if="errors.length" class="text-danger">
+                    <small>{{ errors }}</small>
                   </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
@@ -104,60 +104,15 @@
             </CCard>
           </CCardGroup>
         </CCol>
-        <!-- register -->
-        <!-- <CCol :md="9" :lg="7" :xl="6">
-          <CCard class="mx-4">
-            <CCardBody class="p-4">
-              <CForm>
-                <h1>Register</h1>
-                <p class="text-medium-emphasis">Create your account</p>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>
-                    <CIcon icon="cil-user" />
-                  </CInputGroupText>
-                  <CFormInput placeholder="Username" autocomplete="username" />
-                </CInputGroup>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>@</CInputGroupText>
-                  <CFormInput placeholder="Email" autocomplete="email" />
-                </CInputGroup>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>
-                    <CIcon icon="cil-lock-locked" />
-                  </CInputGroupText>
-                  <CFormInput
-                    type="password"
-                    placeholder="Password"
-                    autocomplete="new-password"
-                  />
-                </CInputGroup>
-                <CInputGroup class="mb-4">
-                  <CInputGroupText>
-                    <CIcon icon="cil-lock-locked" />
-                  </CInputGroupText>
-                  <CFormInput
-                    type="password"
-                    placeholder="Repeat password"
-                    autocomplete="new-password"
-                  />
-                </CInputGroup>
-                <div class="d-grid">
-                  <CButton color="success">Create Account</CButton>
-                </div>
-              </CForm>
-            </CCardBody>
-          </CCard>
-        </CCol>-->
       </CRow>
     </CContainer>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex"
-import axios from "axios"
+import { mapState, mapActions, mapGetters } from "vuex"
+import api from "axios"
 import store from "@/store"
-let URL_register = "auth/register/";
 
 export default {
   name: 'Register',
@@ -165,73 +120,59 @@ export default {
     user: {
       username: '',
       password: '',
-      // repassword: '',
       email: '',
       phone_number: '',
       city: '',
       role: '',
     },
-    cities: '',
-    roles: '',
-
-    errors: {
-      status: false,
-      msg: "Change the fields and try again",
-    },
+    errors: [],
+    loading: false,
   }),
 
+  computed: {
+    ...mapGetters('auth', ['cities', 'roles', 'token', 'isToken']),
+  },
+
   mounted() {
-
-    store.dispatch('login/getCity')
-    this.cities = store.state.login.cities
-    this.roles = store.state.login.roles
-
+    store.dispatch('auth/getCity')
   },
   methods: {
+    ...mapActions('auth', ['Register', 'getUser']),
+
+    selectCity() {
+      console.log("selectCity")
+    },
 
     async registerSubmit() {
-      this.errors.status = false
-      // this.loading = true;
-      // this.errors = [];
-      axios.defaults.headers.common["Authorization"] = "";
-      // localStorage.removeItem("token");
-      store.commit('login/removeToken')
+      console.log(this.isToken)
+      console.log(this.token)
+      this.loading = true;
+      this.errors = [];
+      // register
+      try {
+        await this.Register(this.user)
+        this.loading = false;
 
-      await axios
-        .post(`${URL_register}${this.user.role}/`, {
-          username: this.user.username,
-          password: this.user.password,
-          email: this.user.email,
-          phone_number: this.user.phone_number,
-          city: this.user.city,
-        })
-        .then((response) => {
-          console.log(response);
-          if (response.status) {
-            const token = response.data.data.token;
-            const refToken = response.data.data.refreshToken;
-            // const user = response.data.data.wallet.name;
-            console.log(token, refToken)
-            //save token
-            store.commit("login/setToken", token);
-            // loading
-            // this.loading = false;
+      } catch (e) {
+        console.log(e.response.data)
+        this.errors.push(e.response.data.data)
+        this.loading = false;
+      }
+      //getUser
+      if (this.isToken) {
+        try {
+          await this.getUser(this.token)
+          this.loading = false;
+          this.$router.push('/')
+        } catch (errors) {
+          console.log(errors)
+          this.loading = false;
+        }
+      }
 
-            // change direction
-            window.setTimeout(function () {
-              location.replace("/");
-            }, 100);
-          }
-        })
-        .catch((error) => {
-          console.log(error.response);
-          // loading
-          // this.loading = false;
-          if (error.response.status == 400) {
-            this.errors.status = true
-            // this.errors.msg = error.response.data.data
-          }
-        });
+      this.loading = false;
+
+
     },
   },
 }

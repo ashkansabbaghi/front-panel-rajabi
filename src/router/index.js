@@ -316,7 +316,7 @@ const router = createRouter({
 })
 // let isToken = context.rootState.login.isToken
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requireLogin) && !store.state.login.isToken) {
+  if (to.matched.some((record) => record.meta.requireLogin) && !store.state.auth.isToken) {
     next('/pages/Login')
   } else {
     next()

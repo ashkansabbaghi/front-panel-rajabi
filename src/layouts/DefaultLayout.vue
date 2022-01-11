@@ -28,17 +28,9 @@ export default {
     CContainer,
   },
   data: () => ({
-    token: store.state['login'].token,
-    user: "",
   }),
-  // provide: () => ({
-  //   user: "ashkan joon"
-  // }),
   async created() {
-    // console.log('Created defult layout')
-    // await store.dispatch('login/getUser', this.token)
-    // console.log(store.state['login'].user)
-    // this.user = store.state['login'].user
+
   },
 }
 </script>

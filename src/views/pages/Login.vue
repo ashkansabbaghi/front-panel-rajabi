@@ -6,11 +6,11 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm @submit.prevent="loginSubmit">
+                <CForm @submit.prevent="loginSubmit()">
                   <h1>Login</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
-                  <p v-if="!errors.status" class="text-danger">
-                    <small>{{ errors.msg }}</small>
+                  <p v-if="errors.length" class="text-danger">
+                    <small>{{ errors }}</small>
                   </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
@@ -74,10 +74,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
-import axios from "axios"
+import { mapState, mapActions, mapGetters } from "vuex"
 import store from "@/store"
-let URL_login = "auth/login/username/";
 
 export default {
   name: 'Login',
@@ -88,61 +86,44 @@ export default {
       role: '',
     },
     cities: '',
-    roles: '',
 
-    errors: {
-      status: '',
-      msg: ''
-    },
+    errors: [],
   }),
+  computed: {
+    ...mapGetters('auth', ['roles', 'token', 'isToken']),
+  },
   mounted() {
-
-    this.$store.dispatch('login/getCity')
-    this.cities = this.$store.state.login.cities
-    this.roles = this.$store.state.login.roles
-
+    store.dispatch('auth/getCity')
   },
   methods: {
-    // loginSubmit() {
-    //   store.dispatch('login/loginSubmit', this.user)
-    // }
+    ...mapActions('auth', ['login', 'getUser']),
     async loginSubmit() {
-      axios.defaults.headers.common['Authorization'] = ''
-      // localStorage.removeItem('token')
-      this.$store.commit('login/removeToken')
+      this.loading = true
+      // console.log(this.user)
 
-      await axios.post(`${URL_login}${this.user.role}/`, {
-        username: this.user.username,
-        password: this.user.password,
+      try {
+        //check login
+        await this.login(this.user)
+      } catch (e) {
+        console.log(e)
+        console.log(e.response.data.data)
+        this.errors.push(e.response.data.data)
+        this.loading = false;
+      }
 
-      }).then((response) => {
-        if (response.status) {
-          const token = response.data.data.token;
-          const refToken = response.data.data.refreshToken;
-          // const user = response.data.data.wallet.name;
+      //getUser
+      if (this.isToken) {
+        try {
+          await this.getUser(this.token)
+          this.$router.push('/')
+        } catch (er) {
+          console.log(er)
+          this.loading = false;
 
-          //save token
-          store.commit("login/setToken", token)
-          // get user vuex
-          // let user = store.dispatch('login/getUser', token)
-          // console.log(user)
-
-          // loading
-          // this.loading = false;
-          // change direction
-          window.setTimeout(function () {
-            location.replace("/");
-          }, 100);
         }
-      }).catch((error) => {
-        // loading
-        // this.loading = false;
-        console.log(error.response)
-        if (!error.response.data.data.status) {
-          this.errors.status = error.response.data.data.status
-          this.errors.msg = error.response.data.data.message
-        }
-      })
+      }
+
+      this.loading = false;
     }
   }
 }

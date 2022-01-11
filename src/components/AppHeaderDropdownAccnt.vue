@@ -50,33 +50,35 @@
 <script>
 import avatar from '@/assets/images/avatars/8.jpg'
 import store from "@/store"
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'AppHeaderDropdownAccnt',
   setup() {
     return {
       avatar: avatar,
       itemsCount: 42,
-      // info: {
-      //   token: store.state['login'].token,
-      //   userInfo: store.state['login'].user.info.userable_type,
-      // },
     }
   },
   data: () => ({
-    // info: {
-    //   token: store.state['login'].token,
-    //   userInfo: store.state['login'].user.info.userable_type,
-    // },
+
   }),
+  computed: {
+    ...mapGetters('auth', ['token', 'user'])
+  },
 
   methods: {
+    ...mapActions('auth', ['logOut']),
     async logoutSubmit() {
-      // console.log(this.userInfo.info.userable_type)
       const info = {
-        token: store.state['login'].token,
-        userInfo: store.state['login'].user.info.userable_type,
+        token: this.token,
+        userInfo: this.user.info.userable_type
       }
-      store.dispatch("login/logOutUser", info)
+      try {
+        await this.logOut(info)
+        this.$router.go('/pages/login')
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
