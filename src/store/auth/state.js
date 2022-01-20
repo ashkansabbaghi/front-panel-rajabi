@@ -1,13 +1,18 @@
 export default function () {
   return {
     token: "",
-    refreshToken:"",
+    refreshToken: "",
     user: {},
     isToken: false,
     errors: [],
     loading: false,
     cities: [],
-    roles: ["customer", "employee", "expert", "visitor", "admin", "cityadmin"],
-    // checkToken: false,
+    roles: ["customer", "employee", "expert", "visitor", "cityadmin"],
+    errorNetwork: false,
+    address: {},
+    company : {},
+    social :{},
+    moreInfo : {},
+
   }
 }

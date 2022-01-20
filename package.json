@@ -33,6 +33,7 @@
     "core-js": "^3.19.0",
     "vue": "^3.2.23",
     "vue-router": "^4.0.12",
+    "vue3-persian-datetime-picker": "^1.2.0",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0"
   },

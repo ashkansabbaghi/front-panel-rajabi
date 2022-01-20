@@ -18,7 +18,6 @@ import AppFooter from '@/components/AppFooter.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 
-import store from "@/store"
 export default {
   name: 'DefaultLayout',
   components: {

@@ -111,7 +111,6 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex"
-import api from "axios"
 import store from "@/store"
 
 export default {
@@ -146,6 +145,7 @@ export default {
     async registerSubmit() {
       console.log(this.isToken)
       console.log(this.token)
+      console.log(this.user)
       this.loading = true;
       this.errors = [];
       // register

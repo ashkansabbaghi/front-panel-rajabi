@@ -35,12 +35,12 @@ const routes = [
       {
         path: '/projects',
         name: 'Projects',
-        component: () => import('@/views/folder/Projects.vue'),
+        component: () => import('@/views/layouts/Projects.vue'),
       },
       {
         path: '/cities',
         name: 'cities',
-        component: () => import('@/views/folder/Cities.vue'),
+        component: () => import('@/views/layouts/Cities.vue'),
       },
       // {
       //   path: '/theme/typography',

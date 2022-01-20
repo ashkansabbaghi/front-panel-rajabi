@@ -17,8 +17,13 @@
         <CNavItem>
           <CNavLink href="#">Settings</CNavLink>
         </CNavItem>
-      </CHeaderNav> -->
+      </CHeaderNav>-->
       <CHeaderNav>
+        <CNavItem >
+          <CNavLink  href="#" disabled>
+            <span v-if="errorNetwork" style="color : red" >not connected</span>
+          </CNavLink>
+        </CNavItem>
         <CNavItem>
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-bell" size="lg" />
@@ -48,6 +53,7 @@
 import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { logo } from '@/assets/brand/logo'
+import {mapGetters} from 'vuex'
 export default {
   name: 'AppHeader',
   components: {
@@ -59,5 +65,8 @@ export default {
       logo,
     }
   },
+  computed : {
+    ...mapGetters('auth', ['errorNetwork'])
+  }
 }
 </script>
