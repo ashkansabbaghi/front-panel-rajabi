@@ -10,7 +10,9 @@
                   <h1>Login</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
                   <p v-if="errors.length" class="text-danger">
-                    <small>{{ errors }}</small>
+                    <template v-for="(e,i) in errors" :key="i">
+                      <i>{{ e }}</i>
+                    </template>
                   </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
@@ -99,6 +101,7 @@ export default {
     ...mapActions('auth', ['login', 'getUser']),
     async loginSubmit() {
       this.loading = true
+      this.errors = []
       // console.log(this.user)
 
       try {
@@ -106,8 +109,10 @@ export default {
         await this.login(this.user)
       } catch (e) {
         console.log(e)
-        console.log(e.response.data.data)
-        this.errors.push(e.response.data.data)
+        console.log(e.response)
+        if (e.response.status === 404) {
+          this.errors.push(e.response.data.message)
+        }
         this.loading = false;
       }
 
