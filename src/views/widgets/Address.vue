@@ -11,7 +11,7 @@
                         variant="ghost"
                         @click.prevent="openCreateAddress"
                     >+ create NEW Address</CButton>
-                    <template v-for="(ad , index) in address" :key="index">
+                    <template v-for="(ad, index) in address" :key="index">
                         <CListGroup class="mb-4">
                             <CListGroupItem color="dark">
                                 #{{ index + 1 }}
@@ -59,7 +59,7 @@
                         @submit.prevent="!eAddress.isOpen ? subCreateAddress() : subEditAddress()"
                     >
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel  for="upAddressName">
+                            <CFormLabel for="upAddressName">
                                 name
                                 <!-- <span class="text-danger">*</span> -->
                             </CFormLabel>
@@ -68,11 +68,11 @@
                                 id="upAddressName"
                                 placeholder="enter name"
                                 v-model="upAddress.name"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel  for="upAddressStat">
+                            <CFormLabel for="upAddressStat">
                                 stat
                                 <!-- <span class="text-danger">*</span> -->
                             </CFormLabel>
@@ -81,11 +81,11 @@
                                 id="upAddressStat"
                                 v-model="upAddress.stat"
                                 placeholder="enter stat"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel  for="upAddressCity">
+                            <CFormLabel for="upAddressCity">
                                 city
                                 <!-- <span class="text-danger">*</span> -->
                             </CFormLabel>
@@ -94,53 +94,42 @@
                                 id="upAddressCity"
                                 placeholder="enter city"
                                 v-model="upAddress.city"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel
-
-                                for="upAddressNeighborhood"
-                            >neighborhood</CFormLabel>
+                            <CFormLabel for="upAddressNeighborhood">neighborhood</CFormLabel>
                             <CFormInput
                                 type="text"
                                 id="upAddressNeighborhood"
                                 placeholder="enter neighborhood"
                                 v-model="upAddress.neighborhood"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel
-
-                                for="upAddressStreet"
-                            >street</CFormLabel>
+                            <CFormLabel for="upAddressStreet">street</CFormLabel>
                             <CFormInput
                                 type="text"
                                 id="upAddressStreet"
                                 placeholder="enter street"
                                 v-model="upAddress.street"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel
-
-                                for="upAddressAlley"
-                            >alley</CFormLabel>
+                            <CFormLabel for="upAddressAlley">alley</CFormLabel>
                             <CFormInput
                                 type="text"
                                 id="upAddressAlley"
                                 placeholder="enter alley"
                                 v-model="upAddress.alley"
-                                :required="eAddress.isOpen"
+
                             />
                         </CCol>
 
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel
-                                for="upAddressHouseNumber"
-                            >house number</CFormLabel>
+                            <CFormLabel for="upAddressHouseNumber">house number</CFormLabel>
                             <CInputGroup class="has-validation">
                                 <!-- <CInputGroupText id="inputGroupPrepend">@</CInputGroupText> -->
                                 <CFormInput
@@ -149,7 +138,7 @@
                                     placeholder="999 999 999 9"
                                     v-model="upAddress.house_number"
                                     aria-describedby="inputGroupPrepend"
-                                    :required="eAddress.isOpen"
+
                                 />
                             </CInputGroup>
                         </CCol>
@@ -184,14 +173,17 @@ export default {
             house_number: '',
             others: {},
             id: '',
+            token: '',
+            role: '',
         },
         eAddress: {
             isOpen: false,
             name: ''
         },
+
     }),
     computed: {
-        ...mapGetters('auth', ['address', 'token' , 'user']),
+        ...mapGetters('auth', ['address', 'token', 'user']),
 
         setInfo() {
             this.upAddress = {
@@ -202,6 +194,8 @@ export default {
                 street: this.address.street,
                 alley: this.address.alley,
                 house_number: this.address.house_number,
+                token: this.token,
+                role: this.user.info.userable_type,
             }
         }
 
@@ -212,10 +206,14 @@ export default {
 
         //  address
         async subCreateAddress() {
-            console.log(this.upAddress)
+            const info = { address: this.upAddress, token: this.token, role: this.user.info.userable_type }
+            console.log(info)
             try {
-                await this.createAddress(this.upAddress)
-                this.alert = { color: 'success', suc: true, msg: 'Created Address' }
+                await this.createAddress(info)
+
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Created Address' })
+                setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
                 this.upAddress = {
                     name: "",
                     stat: "",
@@ -227,12 +225,15 @@ export default {
                 }
             } catch (e) {
                 console.log(e.response)
-                this.alert = { color: 'danger', suc: true, msg: 'error' }
+                console.log(e)
+
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'error' })
+                setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
             }
             //again get address
             try {
                 const info = { token: this.token, type: this.user.info.userable_type }
-                // console.log(info)
                 await this.getAddress(info)
             } catch (e) {
                 console.log(e)
@@ -241,12 +242,16 @@ export default {
         },
 
         async subEditAddress() {
-            // upAddress in openEditAddress() change
-            console.log(this.upAddress)
+            const info = { address: this.upAddress, token: this.token, role: this.user.info.userable_type }
+
+            console.log(info)
             try {
-                await this.editAddress(this.upAddress)
+                await this.editAddress(info)
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Update Address' })
+
             } catch (e) {
                 console.log(e)
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'Error Address' })
             }
             //again get address
             try {
@@ -256,6 +261,8 @@ export default {
             } catch (e) {
                 console.log(e)
             }
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
         },
 
         openEditAddress(ad) {
@@ -293,7 +300,7 @@ export default {
 
     },
     mounted() {
-        console.log(this.address)
+        // console.log(this.address)
         this.upAddress = {
             name: this.address.name,
             stat: this.address.stat,

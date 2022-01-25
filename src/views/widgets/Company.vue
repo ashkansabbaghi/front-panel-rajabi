@@ -11,7 +11,7 @@
                         variant="ghost"
                         @click.prevent="openCreateCompany"
                     >+ create NEW Company</CButton>
-                    <template v-for="(co , index) in company" :key="index">
+                    <template v-for="(co, index) in company" :key="index">
                         <CListGroup class="mb-4">
                             <CListGroupItem color="dark">
                                 #{{ index + 1 }}
@@ -81,7 +81,6 @@
                                 id="upCompanyeconomic_code"
                                 v-model="upCompany.economic_code"
                                 placeholder="enter economic_code"
-                                :required="eCompany.isOpen"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
@@ -91,7 +90,6 @@
                                 id="upCompanynational_code"
                                 placeholder="enter national_code"
                                 v-model="upCompany.national_code"
-                                :required="eCompany.isOpen"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
@@ -101,7 +99,6 @@
                                 id="upCompanyregisteration_id"
                                 placeholder="enter registeration_id"
                                 v-model="upCompany.registeration_id"
-                                :required="eCompany.isOpen"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
@@ -111,7 +108,6 @@
                                 id="upCompanytelephone_number"
                                 placeholder="enter telephone_number"
                                 v-model="upCompany.telephone_number"
-                                :required="eCompany.isOpen"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
@@ -121,7 +117,6 @@
                                 id="upCompanyfield_of_activity"
                                 placeholder="enter field_of_activity"
                                 v-model="upCompany.field_of_activity"
-                                :required="eCompany.isOpen"
                             />
                         </CCol>
 
@@ -149,13 +144,14 @@ export default {
         upCompany: {
             id: '',
             userable_type: '',
-
             name: '',
             economic_code: '',
             national_code: '',
             registeration_id: '',
             telephone_number: '',
             field_of_activity: '',
+            role: '',
+            token: '',
         },
         eCompany: {
             isOpen: false,
@@ -174,6 +170,8 @@ export default {
                 registeration_id: this.company.registeration_id,
                 telephone_number: this.company.telephone_number,
                 field_of_activity: this.company.field_of_activity,
+                token: this.token,
+                role: this.user.info.userable_type,
             }
         }
 
@@ -184,10 +182,13 @@ export default {
 
         // company
         async subCreateCompany() {
-            console.log(this.upCompany)
+            const info = { company: this.upCompany, token: this.token, role: this.user.info.userable_type }
+
+            console.log(info)
             try {
-                await this.createCompany(this.upCompany)
-                this.alert = { color: 'success', suc: true, msg: 'Created Company' }
+                await this.createCompany(info)
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Create Company' })
+
                 this.upCompany = {
                     name: "",
                     economic_code: "",
@@ -198,7 +199,8 @@ export default {
                 }
             } catch (e) {
                 console.log(e.response)
-                this.alert = { color: 'danger', suc: true, msg: 'error' }
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'Error' })
+
             }
             //again get company
             try {
@@ -208,16 +210,21 @@ export default {
             } catch (e) {
                 console.log(e)
             }
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
 
         },
 
         async subEditCompany() {
-            // upCompany in openEditCompany() change
-            console.log(this.upCompany)
+            const info = { company: this.upCompany, token: this.token, role: this.user.info.userable_type }
+
+            console.log(info)
             try {
-                await this.editCompany(this.upCompany)
+                await this.editCompany(info)
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Update Company' })
             } catch (e) {
                 console.log(e)
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'Error Company' })
             }
             //again get Company
             try {
@@ -227,6 +234,8 @@ export default {
             } catch (e) {
                 console.log(e)
             }
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
         },
 
         openEditCompany(co) {

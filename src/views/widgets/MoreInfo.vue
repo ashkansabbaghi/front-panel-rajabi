@@ -1,11 +1,11 @@
 <template >
     <CRow>
-        <!-- address  -->
+        <!-- MoreInfo  -->
         <CCol lg="6">
             <CCard class="mb-4">
                 <CCardHeader>More Info</CCardHeader>
                 <CCardBody style="max-height: 400px;overflow-y: auto;">
-                    <CCardBody class="col-6">
+                    <CCardBody class="col-12">
                         <p class="fw-normal">
                             <small class="blockquote-footer">
                                 <!-- <span>{{moreInfo}}</span> -->
@@ -48,13 +48,19 @@
                                 <span>job :</span>
                                 <strong v-text="moreInfo.job"></strong>
                             </small>
+                            <br />
+                            <small class="blockquote-footer">
+                                <!-- <span>{{moreInfo}}</span> -->
+                                <span>City :</span>
+                                <strong v-text="moreInfo.city"></strong>
+                            </small>
                         </p>
                     </CCardBody>
                 </CCardBody>
             </CCard>
         </CCol>
 
-        <!-- update address -->
+        <!-- update MoreInfo -->
         <CCol lg="6">
             <CCard class="mb-4">
                 <CCardHeader>More Info</CCardHeader>
@@ -63,97 +69,120 @@
                     <CForm
                         class="row g-3 needs-validation"
                         novalidation
-                        @submit.prevent="!eAddress.isOpen ? subCreateAddress() : subEditAddress()"
+                        @submit.prevent="subEditMoreInfo()"
                     >
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressName">
-                                name
-                                <!-- <span class="text-danger">*</span> -->
-                            </CFormLabel>
+                            <CFormLabel for="email">email</CFormLabel>
+                            <CFormInput
+                                type="email"
+                                id="email"
+                                placeholder="enter email"
+                                v-model="upMoreInfo.email"
+                                required
+                            />
+                        </CCol>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="up_phone_number">phone number</CFormLabel>
                             <CFormInput
                                 type="text"
-                                id="upAddressName"
+                                id="up_phone_number"
+                                v-model="upMoreInfo.phone_number"
+                                placeholder="enter phone number"
+                            />
+                        </CCol>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="configurations">configurations</CFormLabel>
+                            <CFormInput
+                                type="text"
+                                id="configurations"
+                                placeholder="enter configurations"
+                                v-model="upMoreInfo.configurations"
+                            />
+                        </CCol>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="upJob">Job</CFormLabel>
+                            <CFormInput
+                                type="text"
+                                id="upJob"
+                                placeholder="enter job"
+                                v-model="upMoreInfo.job"
+                            />
+                        </CCol>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="upName">name</CFormLabel>
+                            <CFormInput
+                                type="text"
+                                id="upName"
                                 placeholder="enter name"
-                                v-model="upAddress.name"
-                                :required="eAddress.isOpen"
+                                v-model="upMoreInfo.name"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressStat">
-                                stat
-                                <!-- <span class="text-danger">*</span> -->
-                            </CFormLabel>
+                            <CFormLabel for="upMoreInfoFamily_name">family_name</CFormLabel>
                             <CFormInput
                                 type="text"
-                                id="upAddressStat"
-                                v-model="upAddress.stat"
-                                placeholder="enter stat"
-                                :required="eAddress.isOpen"
+                                id="upMoreInfoFamily_name"
+                                placeholder="enter family_name"
+                                v-model="upMoreInfo.family_name"
                             />
                         </CCol>
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressCity">
-                                city
-                                <!-- <span class="text-danger">*</span> -->
-                            </CFormLabel>
+                            <CFormLabel for="upBirthday">birthday</CFormLabel>
                             <CFormInput
-                                type="text"
-                                id="upAddressCity"
-                                placeholder="enter city"
-                                v-model="upAddress.city"
-                                :required="eAddress.isOpen"
-                            />
-                        </CCol>
-                        <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressNeighborhood">neighborhood</CFormLabel>
-                            <CFormInput
-                                type="text"
-                                id="upAddressNeighborhood"
-                                placeholder="enter neighborhood"
-                                v-model="upAddress.neighborhood"
-                                :required="eAddress.isOpen"
-                            />
-                        </CCol>
-                        <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressStreet">street</CFormLabel>
-                            <CFormInput
-                                type="text"
-                                id="upAddressStreet"
-                                placeholder="enter street"
-                                v-model="upAddress.street"
-                                :required="eAddress.isOpen"
-                            />
-                        </CCol>
-                        <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressAlley">alley</CFormLabel>
-                            <CFormInput
-                                type="text"
-                                id="upAddressAlley"
-                                placeholder="enter alley"
-                                v-model="upAddress.alley"
-                                :required="eAddress.isOpen"
+                                type="date"
+                                id="upBirthday"
+                                placeholder="enter birthday"
+                                v-model="upMoreInfo.birthday"
                             />
                         </CCol>
 
                         <CCol lg="4" class="position-relative">
-                            <CFormLabel for="upAddressHouseNumber">house number</CFormLabel>
-                            <CInputGroup class="has-validation">
-                                <!-- <CInputGroupText id="inputGroupPrepend">@</CInputGroupText> -->
-                                <CFormInput
-                                    type="number"
-                                    id="upAddressHouseNumber"
-                                    placeholder="999 999 999 9"
-                                    v-model="upAddress.house_number"
-                                    aria-describedby="inputGroupPrepend"
-                                    :required="eAddress.isOpen"
-                                />
-                            </CInputGroup>
+                            <CFormLabel for="upNational_id">national_id</CFormLabel>
+                            <CFormInput
+                                type="number"
+                                id="upNational_id"
+                                placeholder="national_id"
+                                v-model="upMoreInfo.national_id"
+                            />
                         </CCol>
-                        <CCol xs="12" class="position-relative" v-if="!eAddress.isOpen">
-                            <CButton color="primary" type="submit">Create</CButton>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="upCity">city</CFormLabel>
+                            <CFormInput
+                                type="text"
+                                id="upCity"
+                                placeholder="City"
+                                v-model="upMoreInfo.city"
+                            />
                         </CCol>
-                        <CCol xs="12" class="position-relative" v-else>
-                            <CButton color="primary" type="submit">Update</CButton>
+                        <CCol lg="4" class="position-relative">
+                            <CFormLabel for="upGender">gender</CFormLabel>
+                            <CRow>
+                                <CCol lg="6" class>
+                                    <input
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="male"
+                                        value="male"
+                                        v-model="upMoreInfo.gender"
+                                        checked
+                                    />
+                                    <label for="male" class="ms-1">male</label>
+                                </CCol>
+                                <CCol lg="6" class>
+                                    <input
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="female"
+                                        value="female"
+                                        v-model="upMoreInfo.gender"
+                                    />
+                                    <label for="female" class="ms-1">female</label>
+                                </CCol>
+                            </CRow>
+                        </CCol>
+
+                        <CCol xs="12" class="position-relative">
+                            <CButton color="primary" type="submit">Update More info</CButton>
                         </CCol>
                     </CForm>
                 </CCardBody>
@@ -167,137 +196,85 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-    name: 'Address',
-    data: () => ({
-        //address
-        upAddress: {
-            name: '',
-            stat: '',
-            city: '',
-            neighborhood: '',
-            street: '',
-            alley: '',
-            house_number: '',
-            others: {},
-            id: '',
-        },
-        eAddress: {
-            isOpen: false,
-            name: ''
-        },
-    }),
-    computed: {
-        ...mapGetters('auth', ['address', 'token', 'user']),
-
-        setInfo() {
-            this.upAddress = {
-                name: this.address.name,
-                stat: this.address.stat,
-                city: this.address.city,
-                neighborhood: this.address.neighborhood,
-                street: this.address.street,
-                alley: this.address.alley,
-                house_number: this.address.house_number,
-            }
-        }
-
+    name: 'moreInfo',
+    component: {
 
     },
-    methods: {
-        ...mapActions('auth', ['getAddress', 'createAddress', 'editAddress',]),
+    data: () => ({
+        upMoreInfo: {
+            email: "",
+            phone_number: "",
+            configurations: "",
+            name: "",
+            family_name: "",
+            birthday: "",
+            national_id: "",
+            gender: "",
+            job: "",
+            stat: "",
+            city: "",
+        },
+        gender: "",
 
-        //  address
-        async subCreateAddress() {
-            console.log(this.upAddress)
+    }),
+    computed: {
+        ...mapGetters('auth', ['token', 'user', 'moreInfo']),
+
+        // setInfo() {
+        //     this.upMoreInfo = {
+        //         email: this.moreInfo.email,
+        //         phone_number: this.moreInfo.phone_number,
+        //         configurations: this.moreInfo.configurations,
+        //         name: this.moreInfo.name,
+        //         family_name: this.moreInfo.family_name,
+        //         birthday: this.moreInfo.birthday,
+        //         national_id: this.moreInfo.national_id,
+        //         gender: this.moreInfo.gender,
+        //         job: this.moreInfo.job,
+        //         city: this.moreInfo.city,
+        //     }
+        // }
+    },
+    methods: {
+        ...mapActions('auth', ['getMoreInfo', 'editMoreInfo']),
+
+        async subEditMoreInfo() {
+            console.log(this.upMoreInfo)
             try {
-                await this.createAddress(this.upAddress)
-                this.alert = { color: 'success', suc: true, msg: 'Created Address' }
-                this.upAddress = {
-                    name: "",
-                    stat: "",
-                    city: "",
-                    neighborhood: "",
-                    street: "",
-                    alley: "",
-                    house_number: "",
-                }
+                await this.editMoreInfo(this.upMoreInfo)
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Update MoreInfo' })
+
             } catch (e) {
                 console.log(e.response)
-                this.alert = { color: 'danger', suc: true, msg: 'error' }
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'Error Update MoreInfo' })
             }
-            //again get address
+            //again get moreInfo
             try {
                 const info = { token: this.token, type: this.user.info.userable_type }
-                // console.log(info)
-                await this.getAddress(info)
+                await this.getMoreInfo(info)
+
             } catch (e) {
                 console.log(e)
             }
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
 
         },
-
-        async subEditAddress() {
-            // upAddress in openEditAddress() change
-            console.log(this.upAddress)
-            try {
-                await this.editAddress(this.upAddress)
-            } catch (e) {
-                console.log(e)
-            }
-            //again get address
-            try {
-                const info = { token: this.token, type: this.user.info.userable_type }
-                // console.log(info)
-                await this.getAddress(info)
-            } catch (e) {
-                console.log(e)
-            }
-        },
-
-        openEditAddress(ad) {
-            console.log(ad.id)
-            this.eAddress = { isOpen: true, name: ad.name }
-            this.upAddress = {
-                id: ad.id,
-                name: ad.name,
-                stat: ad.stat,
-                city: ad.city,
-                neighborhood: ad.neighborhood,
-                street: ad.street,
-                alley: ad.alley,
-                house_number: ad.house_number,
-                token: this.token,
-                role: this.user.info.userable_type,
-            }
-        },
-
-        openCreateAddress() {
-            console.log("create address")
-            this.eAddress.isOpen = false
-            this.upAddress = {
-                name: "",
-                stat: "",
-                city: "",
-                neighborhood: "",
-                street: "",
-                alley: "",
-                house_number: "",
-            }
-
-        },
-
 
     },
     mounted() {
-        console.log(this.address)
-        this.upAddress = {
-            name: this.address.name,
-            stat: this.address.stat,
-            city: this.address.city,
-            neighborhood: this.address.neighborhood,
-            street: this.address.street,
-            alley: this.address.alley,
-            house_number: this.address.house_number,
+        console.log(this.moreInfo)
+        this.upMoreInfo = {
+            email: this.moreInfo.email,
+            phone_number: this.moreInfo.phone_number,
+            configurations: this.moreInfo.configurations,
+            name: this.moreInfo.name,
+            family_name: this.moreInfo.family_name,
+            birthday: this.moreInfo.birthday,
+            national_id: this.moreInfo.national_id,
+            gender: this.moreInfo.gender,
+            job: this.moreInfo.job,
+            city: this.moreInfo.city,
+
             role: this.user.info.userable_type,
             token: this.token
         }

@@ -5,7 +5,8 @@
         <CCol :md="8">
           <CCardGroup>
             <CCard class="p-4">
-              <CCardBody>
+              <!-- login -->
+              <CCardBody v-if="isLogin">
                 <CForm @submit.prevent="loginSubmit()">
                   <h1>Login</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
@@ -51,11 +52,85 @@
                       <CButton color="primary" class="px-4">Login</CButton>
                     </CCol>
                     <CCol :xs="6" class="text-right">
-                      <CButton color="link" class="px-0">Forgot password?</CButton>
+                      <CButton
+                        @click.prevent="openForgetPass()"
+                        color="link"
+                        class="px-0"
+                      >Forgot password?</CButton>
                     </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
+              <!-- forget password -->
+              <!-- <CCardBody v-else>
+                <CForm @submit.prevent>
+                  <h1>Forget password?</h1>
+                  <p class="text-medium-emphasis">Sign In with Question (new password)</p>
+                  <p v-if="errors.length" class="text-danger">
+                    <template v-for="(e,i) in errors" :key="i">
+                      <i>{{ e }}</i>
+                    </template>
+                  </p>
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon="cil-user" />
+                    </CInputGroupText>
+                    <CFormInput
+                      required
+                      placeholder="Username"
+                      autocomplete="username"
+                      v-model="forgetPass.username"
+                    />
+                  </CInputGroup>
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon="cil-lock-locked" />
+                    </CInputGroupText>
+                    <CFormInput
+                      required
+                      type="test"
+                      placeholder="new Password"
+                      autocomplete="current-password"
+                      v-model="forgetPass.new_password"
+                    />
+                  </CInputGroup>
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>#?</CInputGroupText>
+                    <CFormSelect
+                      aria-label="Default select example"
+                      v-model="forgetPass.security_question_id"
+                      required
+                    >
+                      <option value>choose Question</option>
+                      <option
+                        v-for="(item,index) in questions"
+                        :key="index"
+                        :value="item.id"
+                      >{{ item.question }}</option>
+                    </CFormSelect>
+                  </CInputGroup>
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon="cil-lock-locked" />
+                    </CInputGroupText>
+                    <CFormInput
+                      required
+                      type="text"
+                      placeholder="enter answer"
+                      autocomplete="current-password"
+                      v-model="forgetPass.answer"
+                    />
+                  </CInputGroup>
+                  <CRow>
+                    <CCol :xs="6">
+                      <CButton color="primary" class="px-4">New Password</CButton>
+                    </CCol>
+                    <CCol :xs="6" class="text-right">
+                      <CButton @click.prevent="isLogin = true" color="link" class="px-0">normal login</CButton>
+                    </CCol>
+                  </CRow>
+                </CForm>
+              </CCardBody> -->
             </CCard>
             <CCard class="text-white bg-primary py-5" style="width: 44%">
               <CCardBody class="text-center">
@@ -87,18 +162,26 @@ export default {
       password: '',
       role: '',
     },
+    // forgetPass: {
+    //   username: "",
+    //   new_password: "",
+    //   security_question_id: "",
+    //   answer: "",
+    // },
     cities: '',
-
     errors: [],
+    isLogin: true
   }),
   computed: {
-    ...mapGetters('auth', ['roles', 'token', 'isToken']),
+    ...mapGetters('auth', ['roles', 'token', 'isToken', 'questions']),
   },
   mounted() {
+    // first get city
     store.dispatch('auth/getCity')
   },
   methods: {
     ...mapActions('auth', ['login', 'getUser']),
+
     async loginSubmit() {
       this.loading = true
       this.errors = []
@@ -129,7 +212,13 @@ export default {
       }
 
       this.loading = false;
-    }
+    },
+
+    // openForgetPass() {
+    //   console.log(this.forgetPass)
+    //   this.isLogin = false;
+    // }
+
   }
 }
 </script>

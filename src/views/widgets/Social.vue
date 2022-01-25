@@ -177,15 +177,19 @@ export default {
             console.log(info)
             try {
                 await this.editSocial(this.upSocial)
-                try {
-                    await this.getSocial(info)
-                } catch (e) {
-                    console.log(e.response)
-                }
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Update social media' })
+
+            } catch (e) {
+                console.log(e)
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: 'Error social media' })
+                // this.$router.push('/')
+            }
+            try {
+                await this.getSocial(info)
             } catch (e) {
                 console.log(e.response)
-                this.$router.push('/')
             }
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
 
 
         }

@@ -6,11 +6,13 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm @submit.passive="registerSubmit()">
+                <CForm @submit.prevent="registerSubmit()">
                   <h1>Register</h1>
                   <p class="text-medium-emphasis">Create your account</p>
-                  <p v-if="errors.length" class="text-danger">
-                    <small>{{ errors }}</small>
+                   <p v-if="errors.length" class="text-danger">
+                    <template v-for="(e,i) in errors" :key="i">
+                      <i>{{ e }}</i>
+                    </template>
                   </p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
@@ -86,7 +88,7 @@
                     </CFormSelect>
                   </CInputGroup>
                   <div class="d-grid">
-                    <CButton color="success">Create Account</CButton>
+                    <CButton color="success" :disabled="loading">Create Account</CButton>
                   </div>
                 </CForm>
               </CCardBody>
@@ -138,10 +140,6 @@ export default {
   methods: {
     ...mapActions('auth', ['Register', 'getUser']),
 
-    selectCity() {
-      console.log("selectCity")
-    },
-
     async registerSubmit() {
       console.log(this.isToken)
       console.log(this.token)
@@ -155,7 +153,7 @@ export default {
 
       } catch (e) {
         console.log(e.response.data)
-        this.errors.push(e.response.data.data)
+        this.errors.push(e.response.data.message)
         this.loading = false;
       }
       //getUser

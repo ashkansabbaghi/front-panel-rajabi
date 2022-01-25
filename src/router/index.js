@@ -1,36 +1,35 @@
-import { h, resolveComponent } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {
+  h,
+  resolveComponent
+} from 'vue'
+import {
+  createRouter,
+  createWebHashHistory
+} from 'vue-router'
 
 import DefaultLayout from '@/layouts/DefaultLayout'
 import store from '@/store'
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Home',
     component: () => import('@/layouts/DefaultLayout'),
     redirect: '/dashboard',
-    meta : {
-      requireLogin :true,
+    meta: {
+      requireLogin: true,
     },
-    children: [
-      {
+    children: [{
         path: '/dashboard',
         name: 'Dashboard',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
+        component: () => import( /* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
       },
       {
-        path: '/theme',
-        name: 'Theme',
-        redirect: '/theme/typography',
-      },
-      {
-        path: '/theme/colors',
-        name: 'Colors',
-        component: () => import('@/views/theme/Colors.vue'),
+        path: '/security',
+        name: 'security',
+        component: () => import('@/views/layouts/Security.vue'),
       },
       {
         path: '/projects',
@@ -41,6 +40,16 @@ const routes = [
         path: '/cities',
         name: 'cities',
         component: () => import('@/views/layouts/Cities.vue'),
+      },
+      {
+        path: '/resume',
+        name: 'Resume',
+        component: () => import('@/views/layouts/Resume.vue'),
+      },
+      {
+        path: '/companyInfo',
+        name: 'CompanyInfo',
+        component: () => import('@/views/layouts/CompanyInfo.vue'),
       },
       // {
       //   path: '/theme/typography',
@@ -279,10 +288,12 @@ const routes = [
     path: '/pages',
     redirect: '/pages/404',
     name: 'Pages',
-    component: { render() { return h(resolveComponent('router-view'))},
+    component: {
+      render() {
+        return h(resolveComponent('router-view'))
+      },
     },
-    children: [
-      {
+    children: [{
         path: '404',
         name: 'Page404',
         component: () => import('@/views/pages/Page404'),
@@ -311,7 +322,9 @@ const router = createRouter({
   routes,
   scrollBehavior() {
     // always scroll to top
-    return { top: 0 }
+    return {
+      top: 0
+    }
   },
 })
 // let isToken = context.rootState.login.isToken

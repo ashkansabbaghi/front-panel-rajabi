@@ -33,3 +33,12 @@ export const social = (state) => {
 export const moreInfo = (state) => {
   return state.moreInfo;
 }
+export const questions = (state) => {
+  return state.q;
+}
+export const alertX = (state) => {
+  return state.alertX;
+}
+export const resumes = (state) => {
+  return state.resumes;
+}

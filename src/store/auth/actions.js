@@ -13,6 +13,10 @@ let URL_Address = "auth/my/address/";
 let URL_Company = "auth/my/company/";
 let URL_Social = "auth/my/social-media/";
 let URL_More_Info = "auth/my/info/";
+let URL_valid_last_pass = "auth/user/recovery/by-last-password/";
+let URL_new_pass = "auth/user/recovery/new-password/";
+let URL_set_answer = "auth/user/security-answer/";
+let URL_getResume = "users/"; //go to function  users/:type/resume/
 
 
 export const login = async ({
@@ -114,7 +118,7 @@ export const removeUser = async ({
     .then(response => {
       console.log(response)
       commit("removeToken")
-      this.$router.push('/pages/Login')
+      // this.$router.push('/pages/Login')
     })
 }
 
@@ -138,7 +142,7 @@ export const getUser = async ({
       }
     })
     .then(response => {
-      console.log(response.data)
+      // console.log(response.data)
       // console.log(state.refreshToken)
 
       if (response.data.status) {
@@ -181,26 +185,25 @@ export const getAddress = async ({
       }
     })
     .then(response => {
-      console.log(response.data.data)
+      // console.log(response.data.data)
       commit('getAddress', response.data.data)
     })
 }
 
 export const createAddress = async ({
-  commit,
-  dispatch,
-  state
+  commit
 }, info) => {
   console.log(info)
-  await api.post(`${URL_Address}${info.role}/`, {
-      name: info.name,
-      stat: info.stat,
-      city: info.city,
-      neighborhood: info.neighborhood,
-      street: info.street,
-      alley: info.alley,
-      house_number: info.house_number,
-    }, {
+  const data = new FormData()
+  if (info.address.name) data.append('name', info.address.name)
+  if (info.address.stat) data.append('stat', info.address.stat)
+  if (info.address.city) data.append('city', info.address.city)
+  if (info.address.neighborhood) data.append('neighborhood', info.address.neighborhood)
+  if (info.address.street) data.append('street', info.address.street)
+  if (info.address.alley) data.append('alley', info.address.alley)
+  if (info.address.house_number) data.append('house_number', info.address.house_number)
+
+  await api.post(`${URL_Address}${info.role}/`, data, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
@@ -211,21 +214,20 @@ export const createAddress = async ({
 }
 
 export const editAddress = async ({
-  commit,
-  dispatch,
-  state
+  commit
 }, info) => {
+  const data = new FormData()
+  if (info.address.id) data.append('id', info.address.id)
+  if (info.address.name) data.append('name', info.address.name)
+  if (info.address.stat) data.append('stat', info.address.stat)
+  if (info.address.city) data.append('city', info.address.city)
+  if (info.address.neighborhood) data.append('neighborhood', info.address.neighborhood)
+  if (info.address.street) data.append('street', info.address.street)
+  if (info.address.alley) data.append('alley', info.address.alley)
+  if (info.address.house_number) data.append('house_number', info.address.house_number)
+
   console.log(info)
-  await api.patch(`${URL_Address}${info.role}/`, {
-      id: info.id,
-      name: info.name,
-      stat: info.stat,
-      city: info.city,
-      neighborhood: info.neighborhood,
-      street: info.street,
-      alley: info.alley,
-      house_number: info.house_number,
-    }, {
+  await api.patch(`${URL_Address}${info.role}/`, data, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
@@ -239,29 +241,30 @@ export const editAddress = async ({
 export const getCompany = async ({
   commit
 }, info) => {
-  console.log(info)
+  // console.log(info)
   await api.get(`${URL_Company}${info.type}/`, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
     })
     .then(response => {
-      console.log(response.data.data)
+      // console.log(response.data.data)
       commit('getCompany', response.data.data)
     })
 }
 export const createCompany = async ({
   commit
 }, info) => {
+  const data = new FormData()
+  if (info.company.name) data.append('name', info.company.name)
+  if (info.company.economic_code) data.append('economic_code', info.company.economic_code)
+  if (info.company.national_code) data.append('national_code', info.company.national_code)
+  if (info.company.registeration_id) data.append('registeration_id', info.company.registeration_id)
+  if (info.company.telephone_number) data.append('telephone_number', info.company.telephone_number)
+  if (info.company.field_of_activity) data.append('field_of_activity', info.company.field_of_activity)
+
   console.log(info)
-  await api.post(`${URL_Company}${info.role}/`, {
-      name: info.name,
-      economic_code: info.economic_code,
-      national_code: info.national_code,
-      registeration_id: info.registeration_id,
-      telephone_number: info.telephone_number,
-      field_of_activity: info.field_of_activity,
-    }, {
+  await api.post(`${URL_Company}${info.role}/`, data, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
@@ -271,20 +274,18 @@ export const createCompany = async ({
     })
 }
 export const editCompany = async ({
-  commit,
-  dispatch,
-  state
+  commit
 }, info) => {
+  const data = new FormData()
+  if (info.company.id) data.append('id', info.company.id)
+  if (info.company.name) data.append('name', info.company.name)
+  if (info.company.economic_code) data.append('economic_code', info.company.economic_code)
+  if (info.company.national_code) data.append('national_code', info.company.national_code)
+  if (info.company.registeration_id) data.append('registeration_id', info.company.registeration_id)
+  if (info.company.telephone_number) data.append('telephone_number', info.company.telephone_number)
+  if (info.company.field_of_activity) data.append('field_of_activity', info.company.field_of_activity)
   console.log(info)
-  await api.patch(`${URL_Company}${info.role}/`, {
-      id: info.id,
-      name: info.name,
-      economic_code: info.economic_code,
-      national_code: info.national_code,
-      registeration_id: info.registeration_id,
-      telephone_number: info.telephone_number,
-      field_of_activity: info.field_of_activity,
-    }, {
+  await api.patch(`${URL_Company}${info.role}/`, data, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
@@ -298,7 +299,7 @@ export const editCompany = async ({
 export const getSocial = async ({
   commit
 }, info) => {
-  console.log(info)
+  // console.log(info)
   await api.get(`${URL_Social}${info.type}/`, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
@@ -311,26 +312,27 @@ export const getSocial = async ({
 }
 
 export const editSocial = async ({
-  commit,
-  dispatch,
-  state
+  commit
 }, info) => {
   console.log(info)
-  await api.post(`${URL_Social}${info.role}/`, {
-      // id: info.id,
-      facebook: info.facebook,
-      twitter: info.twitter,
-      linkedIn: info.linkedIn,
-      telegram: info.telegram,
-      youtube: info.youtube,
-      instagram: info.instagram,
-      aparat: info.aparat,
-      // orders: null
-    }, {
-      headers: {
-        'Authorization': `Bearer ${info.token}`,
-      }
-    })
+  const data = new FormData()
+
+  data.append("facebook", info.facebook)
+  if (info.twitter) data.append("twitter", info.twitter)
+  if (info.linkedIn) data.append("linkedIn", info.linkedIn)
+  if (info.youtube) data.append("youtube", info.youtube)
+  if (info.telegram) data.append("telegram", info.telegram)
+  if (info.instagram) data.append("instagram", info.instagram)
+  if (info.aparat) data.append("aparat", info.aparat)
+
+  console.log(data)
+
+  await api.post(`${URL_Social}${info.role}/`,
+      data, {
+        headers: {
+          'Authorization': `Bearer ${info.token}`,
+        }
+      })
     .then(response => {
       console.log(response.data)
     })
@@ -340,38 +342,33 @@ export const editSocial = async ({
 export const getMoreInfo = async ({
   commit
 }, info) => {
-  console.log(info)
+  // console.log(info)
   await api.get(`${URL_More_Info}${info.type}/`, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
       }
     })
     .then(response => {
-      console.log(response.data.data)
+      // console.log(response.data.data)
       commit('getMoreInfo', response.data.data)
     })
 }
 
 export const editMoreInfo = async ({
   commit,
-  dispatch,
-  state
 }, info) => {
   console.log(info)
   await api.post(`${URL_More_Info}${info.role}/`, {
-      // id: info.id,
       email: info.email,
-      phone_number: info.phone_number,
-      configurations: info.configurations,
-      name: info.name,
-      family_name: info.family_name,
-      birthday: info.birthday,
-      national_id: info.national_id,
-      gender: info.gender,
-      job: info.job,
-      stat: info.stat,
-      city: info.city,
-
+      phone_number: (info.phone_number) ? info.phone_number : undefined,
+      configurations: (info.configurations) ? info.configurations : undefined,
+      name: (info.name) ? info.name : undefined,
+      family_name: (info.family_name) ? info.family_name : undefined,
+      birthday: (info.birthday) ? info.birthday : undefined,
+      national_id: (info.national_id) ? info.national_id : undefined,
+      gender: (info.gender) ? info.gender : undefined,
+      job: (info.job) ? info.job : undefined,
+      city: (info.city) ? info.city : undefined,
     }, {
       headers: {
         'Authorization': `Bearer ${info.token}`,
@@ -379,5 +376,128 @@ export const editMoreInfo = async ({
     })
     .then(response => {
       console.log(response.data)
+    })
+}
+
+// valid pass (change pass)
+export const setValidPass = async ({
+  commit,
+}, info) => {
+  console.log(info)
+  await api.post(URL_valid_last_pass, {
+      username: info.username,
+      last_password: (info.last_password) ? info.last_password : undefined,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response.data)
+    })
+}
+
+export const newPass = async ({
+  commit,
+}, info) => {
+  console.log(info)
+  await api.post(URL_new_pass, {
+      username: info.username,
+      new_password: (info.new_password) ? info.new_password : undefined,
+      security_question_id: (info.security_question_id) ? info.security_question_id : undefined,
+      answer: (info.answer) ? info.answer : undefined,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response.data)
+    })
+}
+
+export const setQuestion = async ({
+  commit,
+}, info) => {
+  console.log(info)
+  await api.post(URL_set_answer, {
+      security_question_id: info.security_question_id,
+      answer: (info.answer) ? info.answer : undefined,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response.data)
+    })
+}
+
+// resume
+export const getResume = async ({
+  commit
+}, info) => {
+  // console.log(info)
+  await api.get(`${URL_getResume}${info.type}/resume/`, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response)
+      commit('getResume', response.data)
+    })
+}
+
+
+export const setResume = async ({
+  commit,
+}, info) => {
+  console.log(info)
+  const data = new FormData()
+  data.append('file', info.file)
+
+  await api.post(`${URL_getResume}${info.type}/resume/`, data, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response)
+      commit('getResume', response.data)
+    })
+}
+
+export const updateResume = async ({
+  commit,
+}, info) => {
+  console.log(info)
+  const data = new FormData()
+  data.append('file', info.file)
+
+  await api.patch(`${URL_getResume}${info.type}/resume/`, data, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response)
+      commit('getResume', response.data)
+    })
+}
+
+export const deleteResume = async ({
+  commit,
+}, info) => {
+  console.log(info)
+
+  await api.delete(`${URL_getResume}${info.type}/resume/`, {
+      headers: {
+        'Authorization': `Bearer ${info.token}`,
+      }
+    })
+    .then(response => {
+      console.log(response)
+      commit('getResume', null)
     })
 }

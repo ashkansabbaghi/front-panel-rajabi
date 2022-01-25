@@ -5,6 +5,16 @@
       <CNavItem href="#/">
         <CIcon  customClassName="nav-icon" icon="cil-speedometer" />Dashboard
       </CNavItem>
+      <CNavItem href="#/security">
+        <CIcon customClassName="nav-icon" icon="cil-speedometer" />Security
+      </CNavItem>
+      <CNavItem href="#/resume">
+        <CIcon customClassName="nav-icon" icon="cil-speedometer" />Resume
+        <CBadge color="primary ms-auto">*</CBadge>
+      </CNavItem>
+      <CNavItem href="#/companyInfo">
+        <CIcon customClassName="nav-icon" icon="cil-speedometer" />company info
+      </CNavItem>
       <CNavItem href="#/projects">
         <CIcon customClassName="nav-icon" icon="cil-speedometer" />Projects
         <CBadge color="primary ms-auto">NEW</CBadge>

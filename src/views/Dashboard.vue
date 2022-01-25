@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <CRow>
     <InfoUser />
-  </div>
+  </CRow>
 </template>
 
 <script>
@@ -14,6 +14,7 @@ export default {
   name: 'Dashboard',
   components: {
     InfoUser,
+
   },
 
   data: () => ({
@@ -39,6 +40,8 @@ export default {
   },
   //  wrong send refresh token for update token
   async created() {
+    this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' })
+
     // get user
     try {
       await this.getUser(this.token)

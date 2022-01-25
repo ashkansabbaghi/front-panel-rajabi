@@ -35,8 +35,6 @@ export const setEmptyError = (state) => {
   state.errors = []
 }
 export const setUser = (state, user) => {
-  // console.log(user)
-  // localStorage.setItem('user', user)
   state.user = user
 }
 
@@ -59,4 +57,14 @@ export const getSocial = (state, social) => {
 }
 export const getMoreInfo = (state, moreInfo) => {
   state.moreInfo = moreInfo
+}
+export const setAlert = (state, info) => {
+  state.alertX = {
+    color: info.color,
+    suc: info.suc,
+    msg: info.msg
+  }
+}
+export const getResume = (state, resume) => {
+  state.resumes = resume
 }

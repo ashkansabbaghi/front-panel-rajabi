@@ -10,9 +10,26 @@ export default function () {
     roles: ["customer", "employee", "expert", "visitor", "cityadmin"],
     errorNetwork: false,
     address: {},
-    company : {},
-    social :{},
-    moreInfo : {},
+    company: {},
+    social: {},
+    moreInfo: {},
+    q: [{
+      id: 1,
+      question: "where are you?"
+    }, {
+      id: 2,
+      question: "What year is your birthday?"
+    }, {
+      id: 3,
+      question: "Who is your best friend?"
+    }],
+    isQuestion: true,
+    alertX: {
+      suc: false,
+      msg: "vuex",
+      color :"success"
+    },
+    resumes:''
 
   }
 }

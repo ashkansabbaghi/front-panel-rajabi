@@ -1,22 +1,11 @@
 <template>
     <CRow>
-        <CAlert
-            class="text-center"
-            style="z-index : 2;position: fixed; bottom: 2%; width: auto;right: 3%;"
-            :color="alert.color"
-            dismissible
-            v-if="alert.suc"
-        >
-            <b v-text="alert.msg"></b>
-            - {{ user.username }}
-        </CAlert>
-
         <!--  information -->
         <CCol lg="6">
             <CCard class="mb-4">
                 <CCardHeader>information</CCardHeader>
-
-                    <CCardBody class="col-6">
+                <div class="d-flex flex-row bd-highlight">
+                    <CCardBody class="col-12">
                         <p class="fw-normal">
                             <small>
                                 username :
@@ -36,7 +25,15 @@
                             </small>
                         </p>
                     </CCardBody>
-
+                </div>
+                <CCardFooter>
+                    <p class="fw-normal">
+                        <small>
+                            role :
+                            <strong v-text="(user) ? user.info.userable_type : ''"></strong>
+                        </small>
+                    </p>
+                </CCardFooter>
             </CCard>
         </CCol>
 
@@ -45,7 +42,7 @@
             <CCard class="mb-4">
                 <CCardHeader>
                     Edit
-                    <span v-text="user.info.userable_type"></span>
+                    <span v-text="(user) ? user.info.userable_type : ''"></span>
                 </CCardHeader>
 
                 <CCardBody>
@@ -71,29 +68,30 @@
                                 :class="{ 'text-danger': !v.email }"
                                 for="validationTooltip02"
                             >Email</CFormLabel>
-                            <CFormInput
-                                placeholder="test@gmail.com"
-                                type="email"
-                                id="validationTooltip02"
-                                v-model="upUser.email"
-                                required
-                            />
+                            <CInputGroup class="has-validation">
+                                <CInputGroupText id="inputGroupPrepend">@</CInputGroupText>
+                                <CFormInput
+                                    placeholder="test@gmail.com"
+                                    type="email"
+                                    id="validationTooltip02"
+                                    v-model="upUser.email"
+                                    required
+                                />
+                            </CInputGroup>
                         </CCol>
                         <CCol md="4" class="position-relative">
                             <CFormLabel
                                 :class="{ 'text-danger': !v.phone }"
                                 for="validationTooltipUsername"
                             >phone</CFormLabel>
-                            <CInputGroup class="has-validation">
-                                <CInputGroupText id="inputGroupPrepend">@</CInputGroupText>
-                                <CFormInput
-                                    type="number"
-                                    id="validationTooltipUsername"
-                                    v-model="upUser.phone_number"
-                                    aria-describedby="inputGroupPrepend"
-                                    required
-                                />
-                            </CInputGroup>
+
+                            <CFormInput
+                                type="number"
+                                id="validationTooltipUsername"
+                                v-model="upUser.phone_number"
+                                aria-describedby="inputGroupPrepend"
+                                required
+                            />
                         </CCol>
                         <!-- <CCol md="3" class="position-relative">
                             <CFormLabel for="validationTooltip01">birthday</CFormLabel>
@@ -129,6 +127,11 @@
                 </CCardBody>
                 <!-- <CCardFooter class="text-muted">2 days ago</CCardFooter> -->
             </CCard>
+        </CCol>
+
+        <!-- MoreInfo component -->
+        <CCol lg="12" class="mb-4">
+            <MoreInfo />
         </CCol>
 
         <!-- Address component -->
@@ -178,6 +181,7 @@ import ModalDeleteUser from '@/views/modals/ModalDeleteUser'
 import Social from '@/views/widgets/Social'
 import Address from '@/views/widgets/Address'
 import Company from '@/views/widgets/Company'
+import MoreInfo from '@/views/widgets/MoreInfo'
 
 export default {
     name: 'Info',
@@ -187,6 +191,7 @@ export default {
         Social,
         Address,
         Company,
+        MoreInfo,
     },
     data: () => ({
         upUser: {
@@ -195,11 +200,6 @@ export default {
             phone_number: "",
             role: '',
             token: "",
-        },
-        alert: {
-            color: 'success',
-            suc: false,
-            msg: ''
         },
         v: {
             email: true,
@@ -223,9 +223,9 @@ export default {
                 role: this.user.info.userable_type
             }
         }
-
     },
     mounted() {
+        console.log(this.token)
         this.upUser = {
             username: this.user.username,
             email: this.user.email,
@@ -278,18 +278,20 @@ export default {
             try {
                 console.log(this.upUser)
                 await this.UpdateUser(this.upUser)
-                this.alert = { color: 'success', suc: true, msg: 'updated' }
+                this.$store.commit('auth/setAlert', { color: 'success', suc: true, msg: 'Update information' })
+
             } catch (e) {
                 console.log(e.response)
-                console.log(e.message)
-                this.alert = { color: 'danger', suc: true, msg: e.message }
+                this.$store.commit('auth/setAlert', { color: 'danger', suc: true, msg: e.message })
+
             }
             try {
                 await this.getUser(this.token)
             } catch (error) {
                 console.log(error.response)
             }
-            setTimeout(() => this.alert.suc = false, 4500)
+            setTimeout(() => this.$store.commit('auth/setAlert', { color: '', suc: false, msg: '' }), 4500)
+
         },
 
         async subRemoveUser(p) {
@@ -299,13 +301,15 @@ export default {
             console.log(this.infoDelete)
             try {
                 await this.removeUser(this.infoDelete)
+                console.log('remove user')
+                this.$router.push('/pages/login')
 
             } catch (e) {
                 console.log(e.response)
+                console.log(e)
             }
         },
 
-        // more info
     }
 }
 </script>
